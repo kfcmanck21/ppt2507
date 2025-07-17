@@ -1,344 +1,480 @@
-#<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>깊이 있는 학습을 위한 융합 수업 설계</title>
+    <title>2022 개정 교육과정 기반 수학-과학 연계 수업 설계</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            font-size: 16px; /* 기본 폰트 크기 */
+            overflow: hidden;
         }
-        #presentation-wrapper {
-            position: relative;
+        .slide-container {
             width: 100vw;
             height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f2f5;
-        }
-        #slide-container {
-            position: relative;
-            width: 90vw;
-            height: 67.5vw; /* 4:3 비율 */
-            max-width: 1024px;
-            max-height: 768px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
         }
         .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            padding: 4%;
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            visibility: hidden;
+            padding: 2rem;
+            background-color: #f0f2f5; /* Light gray background for the whole page */
         }
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .nav-bar {
+        .slide-content {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            aspect-ratio: 4 / 3;
             width: 90vw;
             max-width: 1024px;
-            padding: 10px 0;
+            max-height: 90vh;
+        }
+        .slide-header {
+            padding: 1.5rem 2rem;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .slide-body {
+            padding: 2rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .nav-button {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0,0,0,0.2);
+            color: white;
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            font-weight: bold;
-        }
-        .touch-nav {
-            position: absolute;
-            top: 0;
-            width: 50%;
-            height: 100%;
-            z-index: 10;
             cursor: pointer;
+            z-index: 20;
+            visibility: hidden; /* As requested */
         }
-        .touch-nav.left { left: 0; }
-        .touch-nav.right { right: 0; }
-
-        .font-controls button {
-            width: 4rem; /* 4x a common base of 1rem */
-            height: 4rem;
-            font-size: 2rem;
-            line-height: 1;
+        .nav-left { left: 1rem; }
+        .nav-right { right: 1rem; }
+        
+        .font-controls {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 30;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .font-btn {
+            width: 4rem; /* 4 times bigger */
+            height: 4rem; /* 4 times bigger */
+            font-size: 2rem; /* 4 times bigger */
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .font-btn:hover {
+            background-color: #1d4ed8;
         }
     </style>
 </head>
 <body class="bg-gray-100">
 
-    <div id="presentation-wrapper">
-        <div class="nav-bar">
-            <div id="slide-title" class="text-lg font-bold">제목 슬라이드</div>
-            <div id="slide-counter" class="text-lg font-bold">1 / 23</div>
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-md z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center h-12 overflow-x-auto whitespace-nowrap">
+                <a href="#slide-1" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">표지</a>
+                <a href="#slide-5" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">수업 소개</a>
+                <a href="#slide-8" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">핵심 아이디어</a>
+                <a href="#slide-11" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">탐구 질문</a>
+                <a href="#slide-19" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">인포그래픽</a>
+                <a href="#slide-21" class="nav-link text-sm md:text-base font-bold text-gray-700 hover:text-blue-600 px-3 py-2">결론</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="font-controls">
+        <div id="font-increase" class="font-btn">+</div>
+        <div id="font-decrease" class="font-btn">-</div>
+    </div>
+
+    <div id="slide-container" class="slide-container">
+        <div id="slide-1" class="slide">
+            <div class="slide-content text-center flex flex-col justify-center">
+                <div class="slide-body">
+                    <h1 class="text-5xl font-bold text-gray-800 mb-4">👩‍🏫✨ 2022 개정 교육과정 기반 '깊이 있는 학습'</h1>
+                    <p class="text-3xl font-bold text-blue-600">4학년 수학-과학 연계 수업 설계</p>
+                </div>
+            </div>
         </div>
 
-        <div id="slide-container">
-            <div class="touch-nav left" onclick="changeSlide(-1)"></div>
-            <div class="touch-nav right" onclick="changeSlide(1)"></div>
-
-            <div class="slide active" data-title="시작 화면">
-                <h1 class="text-5xl font-bold mb-4">🚀 깊이 있는 학습을 위한<br>융합 수업 설계</h1>
-                <p class="text-2xl font-bold mt-4">2022 개정 교육과정 연계<br>초등 4학년 수학-과학 융합 수업</p>
-            </div>
-
-            <div class="slide" data-title="2022 개정 교육과정의 지향점">
-                <h2 class="text-4xl font-bold mb-8">🌟 2022 개정 교육과정의 지향점</h2>
-                <p class="text-3xl font-bold">단순한 지식 습득을 넘어, <br><br> <span class="bg-yellow-200 px-4 py-2 rounded">핵심 역량을 기르는 교육</span>으로</p>
-            </div>
-
-            <div class="slide" data-title="깊이 있는 학습의 핵심 도구">
-                <h2 class="text-4xl font-bold mb-12">🔑 깊이 있는 학습의 핵심 도구</h2>
-                <div class="flex justify-around w-full">
-                    <div class="text-3xl font-bold p-8 bg-blue-100 rounded-lg">1. 핵심 아이디어</div>
-                    <div class="text-3xl font-bold p-8 bg-green-100 rounded-lg">2. 탐구 질문</div>
+        <div id="slide-2" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🎯 들어가며: 왜 '깊이 있는 학습'인가?</h2></div>
+                <div class="slide-body content-text">
+                    <p class="text-justify font-bold">2022 개정 교육과정은 학생들이 단순히 지식을 암기하는 것을 넘어, 삶의 맥락 속에서 학습을 이해하고 적용할 수 있는 **'역량'**을 기르는 교육을 지향합니다.</p>
+                    <p class="mt-4 text-justify font-bold">'깊이 있는 학습'은 이러한 역량 함양을 위한 핵심적인 교수·학습 방식으로, 학습 내용의 핵심 아이디어를 중심으로 탐구와 성찰을 통해 앎을 삶으로 연결하는 과정입니다.</p>
                 </div>
             </div>
+        </div>
 
-            <div class="slide" data-title="'핵심 아이디어'란?">
-                <h2 class="text-4xl font-bold mb-8">🤔 '핵심 아이디어'란?</h2>
-                <blockquote class="text-3xl font-bold p-6 bg-gray-100 border-l-8 border-blue-500">
-                    💡 학생들이 학습을 마치고 나서<br>스스로 <span class="text-blue-600">이해하고 일반화</span>한 내용
-                </blockquote>
-            </div>
-
-             <div class="slide" data-title="왜 '재진술'이 필요할까?">
-                <h2 class="text-4xl font-bold mb-8">🧑‍🏫 왜 '재진술'이 필요할까?</h2>
-                <p class="text-3xl font-bold">교육과정의 핵심 아이디어를<br>초등학생의 눈높이에 맞게 변환!<br><br>➡️ <span class="bg-green-200 px-4 py-2 rounded">단원 핵심 아이디어</span></p>
-            </div>
-            
-            <div class="slide" data-title="수업 소개: 지구의 얼굴">
-                 <h2 class="text-4xl font-bold mb-8">🌍 수업 소개: 지구의 얼굴</h2>
-                 <p class="text-3xl font-bold">4학년 수학-과학 연계 수업<br><br><strong class="text-4xl text-blue-600">"육지와 바다를 자료로 탐험해요!"</strong></p>
-            </div>
-
-            <div class="slide" data-title="수업 목표">
-                <h2 class="text-4xl font-bold mb-8">🎯 수업 목표</h2>
-                <ul class="text-2xl font-bold text-left list-disc list-inside space-y-4">
-                    <li>지구 표면의 육지와 바다 특징을 비교할 수 있다.</li>
-                    <li>자료를 수집하여 막대그래프로 나타내고 해석할 수 있다.</li>
-                    <li>자료를 통해 지구 환경의 중요성을 인식할 수 있다.</li>
-                </ul>
-            </div>
-
-            <div class="slide" data-title="관련 성취기준: 과학">
-                <h2 class="text-4xl font-bold mb-8">🔬 관련 성취기준: 과학</h2>
-                 <p class="text-2xl font-bold bg-green-100 p-6 rounded-lg">
-                    <strong>[4과06-01]</strong> 지구가 대기로 둘러싸여 있음을 알고, 지구 표면을 구성하는 육지와 바다의 특징을 비교할 수 있다.
-                    <br><br>
-                    <strong>▪️ 탐구 활동:</strong> 지구의 육지와 바다 면적 비교하기
-                </p>
-            </div>
-            
-            <div class="slide" data-title="관련 성취기준: 수학">
-                <h2 class="text-4xl font-bold mb-8">📊 관련 성취기준: 수학</h2>
-                 <p class="text-2xl font-bold bg-blue-100 p-6 rounded-lg">
-                    <strong>[4수04-01]</strong> 자료를 수집하여 그림그래프나 막대그래프로 나타내고 해석할 수 있다.
-                    <br><br>
-                    <strong>[4수04-03]</strong> 탐구 문제를 해결하기 위해 자료를 수집, 정리하여 그래프로 나타내고 해석할 수 있다.
-                </p>
-            </div>
-
-            <div class="slide" data-title="단원 핵심 아이디어">
-                 <h2 class="text-4xl font-bold mb-8">✨ 단원 핵심 아이디어 (재진술)</h2>
-                 <p class="text-3xl font-bold leading-relaxed">우리는 지구 표면을 구성하는 육지와 바다의 비율과 특징을 <span class="text-blue-600">자료</span>를 통해 이해하고 표현함으로써, 우리 행성의 모습을 더욱 <span class="text-green-600">깊이 있게 파악</span>하고 <span class="text-red-500">환경의 중요성</span>을 인식할 수 있습니다.</p>
-            </div>
-
-            <div class="slide" data-title="핵심 아이디어의 의미">
-                <h2 class="text-4xl font-bold mb-12">🔗 핵심 아이디어의 의미</h2>
-                <div class="flex items-center justify-center w-full text-2xl font-bold">
-                    <div class="p-6 bg-green-100 rounded-lg">과학적 사실<br>(육지:바다 비율)</div>
-                    <div class="mx-8 text-5xl">+</div>
-                    <div class="p-6 bg-blue-100 rounded-lg">수학적 도구<br>(자료 표현/해석)</div>
-                    <div class="mx-8 text-5xl">=</div>
-                    <div class="p-6 bg-yellow-200 rounded-lg">개념적 이해</div>
+        <div id="slide-3" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">💡 핵심 도구 1: 핵심 아이디어</h2></div>
+                <div class="slide-body content-text">
+                    <p class="text-justify font-bold">**핵심 아이디어(Core Idea)**란, 학생들이 단원 학습을 마친 후에도 오랫동안 기억하고 활용할 수 있는 일반화된 지식을 의미합니다. 교과 내의 개별적인 사실과 기능을 아우르는 **'큰 그림'이자 개념적 이해의 정수**입니다.</p>
+                    <p class="mt-4 text-justify font-bold">예: "모든 생물은 환경과 상호작용하며 살아간다."</p>
                 </div>
             </div>
-
-            <div class="slide" data-title="'탐구 질문'의 역할">
-                <h2 class="text-4xl font-bold mb-8">🔎 '탐구 질문'의 역할</h2>
-                <p class="text-3xl font-bold">개념적 렌즈 도출, 핵심 정보 포착, 지식의 적용(전이)을 돕는 나침반</p>
-            </div>
-
-            <div class="slide" data-title="탐구 질문 1">
-                 <h2 class="text-4xl font-bold mb-8">1️⃣ 육지와 바다 면적을 측정하고 표현하는 다양한 방법은 무엇이며, 각 방법은 지구의 특징을 이해하는 데 어떤 도움을 줄까요? 📏</h2>
-            </div>
-            
-            <div class="slide" data-title="탐구 질문 1의 의도">
-                <h2 class="text-4xl font-bold mb-8">🎨 탐구 질문 1의 의도</h2>
-                <p class="text-3xl font-bold mb-8">다양한 수학적 표현 방식 탐구</p>
-                <div class="w-full h-48">
-                    <canvas id="chart1"></canvas>
-                </div>
-                <p class="text-xl font-bold mt-4">단순히 그리기를 넘어, 자료 해석의 본질을 이해하도록 유도</p>
-            </div>
-
-            <div class="slide" data-title="탐구 질문 2">
-                <h2 class="text-4xl font-bold mb-8">2️⃣ 수집된 자료를 통해 우리는 지구 환경에 대해 어떤 새로운 사실을 발견하고, 무엇을 생각해 볼 수 있을까요? 💡</h2>
-            </div>
-
-            <div class="slide" data-title="탐구 질문 2의 의도">
-                 <h2 class="text-4xl font-bold mb-8">📉 탐구 질문 2의 의도</h2>
-                 <p class="text-3xl font-bold">자료 속에서 패턴을 찾고<br>스스로 과학적 의미를 구성하도록 지원</p>
-                 <p class="text-2xl font-bold mt-8">➡️ <span class="bg-yellow-200 px-4 py-2 rounded">개념적 이해 심화</span></p>
-            </div>
-
-            <div class="slide" data-title="탐구 질문 3">
-                <h2 class="text-4xl font-bold mb-8">3️⃣ 이 지식이 왜 중요하며, 우리 생활이나 다른 환경 문제를 이해하는 데 어떻게 활용될 수 있을까요? 🌱</h2>
-            </div>
-
-            <div class="slide" data-title="탐구 질문 3의 의도">
-                 <h2 class="text-4xl font-bold mb-8">🧠 탐구 질문 3의 의도</h2>
-                 <p class="text-3xl font-bold">학습한 지식의 가치를 내면화하고<br>다른 맥락에 적용하는 <span class="text-purple-600">'전이' 능력</span> 함양</p>
-            </div>
-            
-            <div class="slide" data-title="교사의 역할 변화">
-                 <h2 class="text-4xl font-bold mb-8">🤝 교사의 역할 변화</h2>
-                 <div class="flex items-center justify-around w-full text-3xl font-bold">
-                    <div>지식 전달자</div>
-                    <div class="text-5xl">➡️</div>
-                    <div><span class="bg-green-200 p-4 rounded-lg">학습 촉진자/안내자</span></div>
-                 </div>
-            </div>
-
-            <div class="slide" data-title="기대 효과">
-                 <h2 class="text-4xl font-bold mb-8">🏆 기대 효과</h2>
-                 <ul class="text-3xl font-bold space-y-6">
-                    <li>✔️ 교사의 주체성 및 자율성 실현</li>
-                    <li>✔️ 학생 주도성 기반 역량 중심 교육 구현</li>
-                 </ul>
-            </div>
-            
-            <div class="slide" data-title="지식의 확장과 연결">
-                 <h2 class="text-4xl font-bold mb-8">🌐 지식의 확장과 연결</h2>
-                 <p class="text-3xl font-bold">육지와 바다 면적 비율 학습을<br>다음 문제와 연결하여 사고 확장</p>
-                 <div class="flex justify-around w-full mt-12 text-2xl font-bold">
-                    <div class="p-4 bg-blue-100 rounded-lg">🌊 해수면 상승</div>
-                    <div class="p-4 bg-red-100 rounded-lg">💧 물 부족 문제</div>
-                    <div class="p-4 bg-yellow-100 rounded-lg">☀️ 기후 변화</div>
-                 </div>
-            </div>
-
-            <div class="slide" data-title="Q&A">
-                <h2 class="text-6xl font-bold">❓ Q&A</h2>
-                <p class="text-3xl font-bold mt-8">궁금한 점이 있으신가요?</p>
-            </div>
-
-            <div class="slide" data-title="감사합니다">
-                <h2 class="text-6xl font-bold">🙏 감사합니다</h2>
-                 <p class="text-2xl font-bold mt-8">발표자: OOO</p>
-            </div>
-            
         </div>
         
-        <div class="font-controls fixed bottom-4 right-4 flex space-x-2 z-20">
-            <button id="decrease-font" class="bg-gray-700 text-white rounded-full flex items-center justify-center">-</button>
-            <button id="increase-font" class="bg-gray-700 text-white rounded-full flex items-center justify-center">+</button>
+        <div id="slide-4" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">❓ 핵심 도구 2: 탐구 질문</h2></div>
+                <div class="slide-body content-text">
+                    <p class="text-justify font-bold">**탐구 질문(Inquiry Question)**은 학생들의 호기심을 자극하고 능동적인 사고 과정을 이끄는 핵심 도구입니다. 정답이 하나로 정해져 있지 않은 개방형 질문으로, 학생들이 스스로 문제를 발견하고 해결하며 **핵심 아이디어에 도달하도록 돕습니다.**</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-5" class="slide">
+            <div class="slide-content text-center flex flex-col justify-center">
+                <div class="slide-body">
+                    <h1 class="text-5xl font-bold text-gray-800 mb-4">🌍🔬📊 수업 소개</h1>
+                    <p class="text-3xl font-bold text-blue-600">'지구의 얼굴: 육지와 바다를 자료로 탐험해요!'</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🧪 관련 성취기준 (과학)</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">**[4과06-01]** 지구가 대기로 둘러싸여 있음을 알고, 지구 표면을 구성하는 **육지와 바다의 특징을 비교**할 수 있다.</p>
+                     <ul class="list-disc list-inside mt-4 pl-4 font-bold">
+                        <li>탐구 활동: 지구의 육지와 바다 면적 비교하기</li>
+                     </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-7" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">📏 관련 성취기준 (수학)</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">**[4수04-01]** 자료를 수집하여 **그림그래프나 막대그래프**로 나타내고 해석할 수 있다.</p>
+                     <p class="mt-4 text-justify font-bold">**[4수04-03]** 탐구 문제를 해결하기 위해 자료를 수집, 정리하여 **막대그래프나 꺾은선그래프**로 나타내고 해석할 수 있다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-8" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🧒💬 '단원 핵심 아이디어'란?</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">교육과정에서 제시된 핵심 아이디어는 초등학생에게 다소 추상적이고 어려울 수 있습니다. 따라서, 단원의 성취기준과 내용 요소를 분석하여 **학생들의 눈높이에 맞게 쉽고 명료하게 '재진술'**하는 과정이 필요합니다. 이를 **'단원 핵심 아이디어'**라고 부를 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-9" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🌱 본 수업의 단원 핵심 아이디어</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-center text-2xl font-bold leading-relaxed">"우리는 지구 표면을 구성하는 육지와 바다의 비율과 특징을 <span class="text-blue-600">자료</span>를 통해 이해하고 표현함으로써, 우리 행성의 모습을 더욱 <span class="text-green-600">깊이 있게 파악</span>하고 <span class="text-red-500">환경의 중요성을 인식</span>할 수 있습니다."</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-10" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🔗 핵심 아이디어의 목표</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">이 핵심 아이디어는 학생들이 **과학적 사실(육지:바다 비율)을 수학적 도구(자료 표현 및 해석)를 사용하여 개념적으로 이해**하는 것을 목표로 합니다.</p>
+                     <p class="mt-4 text-justify font-bold">단순히 면적 비율을 아는 것을 넘어, 그 비율이 왜 중요한지, 그리고 그것이 환경에 어떤 영향을 미치는지까지 사고를 확장하도록 이끌어줍니다. 즉, **지식과 정보를 연결하여 새로운 지식을 구성**하는 과정입니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-11" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">👓 탐구 질문의 역할</h2></div>
+                <div class="slide-body content-text">
+                    <p class="text-justify font-bold">탐구 질문은 학생들이 다음과 같은 능력을 기르도록 돕습니다.</p>
+                     <ul class="list-decimal list-inside mt-4 pl-4 font-bold space-y-2">
+                        <li>개념적 렌즈(세상을 바라보는 눈) 도출</li>
+                        <li>사실적 정보 속에서 핵심 포인트 포착</li>
+                        <li>새로운 상황에 지식을 적용(전이)</li>
+                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-12" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">✍️ 탐구 질문 1 (과정·기능)</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-center text-2xl font-bold leading-relaxed">"지구의 육지와 바다 면적을 측정하고 표현하는 <span class="text-blue-600">다양한 방법</span>은 무엇이며, 각 방법은 지구의 특징을 이해하는 데 <span class="text-blue-600">어떤 도움</span>을 줄까요?"</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-13" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🎨 탐구 질문 1 해설</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">이 질문은 학생들이 육지와 바다 면적이라는 사실적 정보를 다양한 **수학적 표현 방식(그림그래프, 막대그래프 등)**으로 나타내는 과정을 탐구하도록 유도합니다.</p>
+                     <p class="mt-4 text-justify font-bold">다양한 표현 방식이 정보를 어떻게 다르게 전달하고 이해를 돕는지 고민하게 하여, 단순히 그래프를 그리는 것을 넘어 **자료 해석의 본질을 이해**하도록 합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-14" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🗺️ 탐구 질문 2 (지식 도출)</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-center text-2xl font-bold leading-relaxed">"수집된 육지와 바다 면적 자료를 통해 우리는 지구 환경에 대해 <span class="text-green-600">어떤 새로운 사실을 발견</span>하고, 이를 통해 <span class="text-green-600">무엇을 생각해 볼 수 있을까요?</span>"</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-15" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🧠 탐구 질문 2 해설</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">이 질문은 학생들이 수집하고 정리한 자료를 바탕으로 **패턴을 찾아 지식을 도출**하도록 돕습니다.</p>
+                     <p class="mt-4 text-justify font-bold">육지와 바다의 면적 비율이 가지는 **과학적 의미(지구 환경의 특징)를 스스로 구성**하게 함으로써 **개념적 이해를 심화**시키는 데 기여합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-16" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🤔 탐구 질문 3 (가치·태도)</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-center text-2xl font-bold leading-relaxed">"지구의 육지와 바다의 면적 비율을 이해하는 것이 <span class="text-red-500">왜 중요</span>하며, 이 지식이 우리 생활이나 다른 환경 문제를 이해하는 데 <span class="text-red-500">어떻게 활용</span>될 수 있을까요?"</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-17" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">♻️ 탐구 질문 3 해설</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">이 질문은 학습한 내용이 왜 가치 있는지(가치·태도) 학생들이 스스로 생각하게 합니다. 나아가 이 지식이 **'다른 맥락에서 적용'되는 능력, 즉 '전이' 능력**을 길러줍니다.</p>
+                     <p class="mt-4 text-justify font-bold">예를 들어, **해수면 상승 문제(기후변화)**나 **물 부족 문제** 등 다른 환경 문제와 연관 지어 생각하는 기회를 제공할 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-18" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🚀 수업의 기대 효과</h2></div>
+                <div class="slide-body content-text">
+                    <p class="text-justify font-bold">이와 같은 수업 설계를 통해 학생들은 직접 자료를 수집하고, 수학적 도구를 활용하여 표현하며, 그 과정에서 과학적 의미를 탐색하고, 최종적으로 지식이 삶과 연결되는 **'전이'를 경험**하게 됩니다.</p>
+                    <p class="mt-4 text-justify font-bold">이는 **학생의 주체적인 탐구**를 지원하고 **미래 사회에 필요한 핵심 역량**을 함양하는 데 기여합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-19" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">📊 인포그래픽: 육지 vs 바다</h2></div>
+                <div class="slide-body flex justify-center items-center content-text">
+                    <div style="width: 80%; height: 80%;"><canvas id="myChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-20" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">🧑‍🏫 교사의 역할</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">깊이 있는 학습에서 교사는 단순히 지식을 전달하는 사람이 아닙니다. 학생들의 학습 과정을 세심하게 관찰하고, 의미 있는 질문을 던지며, 탐구를 촉진하는 **'학습의 촉진자'이자 '수업 설계자'**로서의 역할이 중요합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="slide-21" class="slide">
+            <div class="slide-content">
+                <div class="slide-header"><h2 class="text-2xl font-bold text-center text-gray-800">✅ 결론: 미래 교육을 향하여</h2></div>
+                <div class="slide-body content-text">
+                     <p class="text-justify font-bold">핵심 아이디어와 탐구 질문을 활용한 교과 연계 수업은 **2022 개정 교육과정이 지향하는 '교사의 주체성'과 '역량 교육'**을 현장에서 실현하는 구체적인 방법론이 될 수 있습니다.</p>
+                     <p class="mt-4 text-justify font-bold">이를 통해 우리 학생들은 미래 사회가 요구하는 **창의적이고 비판적인 사고 역량**을 갖춘 인재로 성장할 것입니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-22" class="slide">
+            <div class="slide-content text-center flex flex-col justify-center">
+                <div class="slide-body">
+                    <h1 class="text-6xl font-bold text-gray-800">🙏</h1>
+                    <p class="text-4xl font-bold text-blue-600 mt-4">Q & A</p>
+                    <p class="text-2xl font-bold text-gray-600 mt-2">질문과 답변</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const slideCounter = document.getElementById('slide-counter');
-        const slideTitle = document.getElementById('slide-title');
-        const totalSlides = slides.length;
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active');
-                if (i === index) {
-                    slide.classList.add('active');
-                    slideCounter.textContent = `${i + 1} / ${totalSlides}`;
-                    slideTitle.textContent = slide.dataset.title;
-                }
-            });
-        }
-
-        function changeSlide(n) {
-            currentSlide = (currentSlide + n + totalSlides) % totalSlides;
-            showSlide(currentSlide);
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                changeSlide(1);
-            } else if (e.key === 'ArrowLeft') {
-                changeSlide(-1);
-            }
-        });
-        
-        // Font size controls
-        const body = document.body;
-        const increaseFontBtn = document.getElementById('increase-font');
-        const decreaseFontBtn = document.getElementById('decrease-font');
-
-        increaseFontBtn.addEventListener('click', () => {
-            const currentSize = parseFloat(window.getComputedStyle(body).fontSize);
-            body.style.fontSize = (currentSize + 1) + 'px';
-        });
-
-        decreaseFontBtn.addEventListener('click', () => {
-            const currentSize = parseFloat(window.getComputedStyle(body).fontSize);
-            if (currentSize > 10) { // 최소 폰트 크기 제한
-                body.style.fontSize = (currentSize - 1) + 'px';
-            }
-        });
-        
-        // Chart.js initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            showSlide(currentSlide);
-
-            const ctx1 = document.getElementById('chart1').getContext('2d');
-            new Chart(ctx1, {
-                type: 'bar', // 'pie', 'bar', 'line' 등
-                data: {
-                    labels: ['그림그래프', '막대그래프', '원그래프'],
-                    datasets: [{
-                        label: '정보 전달력',
-                        data: [7, 9, 8],
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(255, 206, 86, 0.5)'
-                        ],
-                        borderColor: [
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 206, 86, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: '다양한 그래프 표현 예시', font: { size: 16, family: 'Noto Sans KR' }}
+        document.addEventListener('DOMContentLoaded', function () {
+            const slideContainer = document.getElementById('slide-container');
+            const slides = document.querySelectorAll('.slide');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+            let currentFontSize = 1.0; // Base font size in rem
+            
+            // --- Chart.js Implementation ---
+            const ctx = document.getElementById('myChart');
+            if(ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['바다 (Sea)', '육지 (Land)'],
+                        datasets: [{
+                            label: '지구 표면 비율',
+                            data: [71, 29],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(34, 197, 94, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(34, 197, 94, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
                     },
-                    scales: {
-                        y: { beginAtZero: true }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '%';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
                     }
+                });
+            }
+
+            function updateSlidePosition() {
+                slideContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+                updateNavLinks();
+            }
+
+            function updateNavLinks() {
+                navLinks.forEach(link => {
+                    link.classList.remove('text-blue-600', 'scale-110');
+                    if (link.getAttribute('href') === `#slide-${currentSlide + 1}`) {
+                        link.classList.add('text-blue-600', 'scale-110');
+                    }
+                });
+            }
+            
+            function changeFontSize(direction) {
+                currentFontSize += direction * 0.1;
+                if (currentFontSize < 0.5) currentFontSize = 0.5; // min size
+                if (currentFontSize > 2.0) currentFontSize = 2.0; // max size
+                document.querySelectorAll('.content-text').forEach(el => {
+                    // This is a simplified approach. For real applications, you'd have base sizes and multipliers.
+                    el.style.fontSize = `${currentFontSize}em`;
+                });
+            }
+
+            // Navigation Links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const slideIndex = parseInt(link.getAttribute('href').split('-')[1]) - 1;
+                    currentSlide = slideIndex;
+                    updateSlidePosition();
+                });
+            });
+
+            // Font size controls
+            document.getElementById('font-increase').addEventListener('click', () => changeFontSize(1));
+            document.getElementById('font-decrease').addEventListener('click', () => changeFontSize(-1));
+
+            // Touch/Swipe controls
+            let touchstartX = 0;
+            let touchendX = 0;
+
+            function handleGesture() {
+                if (touchendX < touchstartX - 50) { // Swiped left
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    updateSlidePosition();
+                }
+                if (touchendX > touchstartX + 50) { // Swiped right
+                    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                    updateSlidePosition();
+                }
+            }
+
+            slideContainer.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            slideContainer.addEventListener('touchend', e => {
+                touchendX = e.changedTouches[0].screenX;
+                handleGesture();
+            });
+
+            // Keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight') {
+                     currentSlide = (currentSlide + 1) % totalSlides;
+                     updateSlidePosition();
+                } else if (e.key === 'ArrowLeft') {
+                     currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                     updateSlidePosition();
                 }
             });
+
+            // Initial setup
+            updateSlidePosition();
         });
     </script>
+
 </body>
 </html>
