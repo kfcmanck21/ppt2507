@@ -3,298 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 남부 다·더·함 문화다양성 교사 연수</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>2025 남부 다·더·함 문화다양성 교사 연수 - 인터랙티브 학습 대시보드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Pretendard/subsets/Pretendard-dynamic-subset.css" type="text/css"/>
     <style>
+        :root {
+            --primary-color: #2c3e50; /* Calm Trust: Main */
+            --background-color: #ecf0f1; /* Calm Trust: Background */
+            --text-color: #34495e; /* Calm Trust: Text */
+            --accent-color: #3498db;
+            --sidebar-width: 320px;
+            --header-height: 70px;
+        }
+
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            line-height: 1.7;
         }
-        .slide-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 40px auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            overflow: hidden;
-        }
-        .slide {
-            padding: 50px 60px;
-            min-height: 550px;
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #bdc3c7;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            background-color: white;
-            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            z-index: 20;
         }
-        .slide:last-child {
-            border-bottom: none;
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #bdc3c7;
         }
-        .slide-title {
-            font-size: 3rem; /* 48px */
-            font-weight: 900;
-            color: #1e293b;
-            line-height: 1.2;
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            color: var(--primary-color);
         }
-        .slide-subtitle {
-            font-size: 1.5rem; /* 24px */
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li a {
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar-nav li a:hover {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+        }
+
+        .sidebar-nav li a.active {
+            background-color: #dadedf;
+            color: var(--primary-color);
+            border-left-color: var(--accent-color);
             font-weight: 700;
-            color: #475569;
-            margin-top: 1rem;
         }
-        .section-title {
-            font-size: 2.25rem; /* 36px */
-            font-weight: 700;
-            color: #0f172a;
-            padding-bottom: 0.5rem;
-            border-bottom: 4px solid; /* 색상은 인라인으로 지정 */
-            margin-bottom: 2rem;
+
+        .progress-container {
+            padding: 20px;
+            border-top: 1px solid #bdc3c7;
         }
-        .content-box {
-            background-color: #f8fafc;
-            border-left: 5px solid; /* 색상은 인라인으로 지정 */
-            padding: 1.5rem;
+
+        .progress-container p {
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .progress-bar-background {
+            width: 100%;
+            height: 15px;
+            background-color: #dfe6e9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #8e44ad);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        #progress-text {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 0;
+            /* [FIX] 아래 두 속성을 추가하여 이 요소가 독립적인 스크롤을 갖도록 수정했습니다. */
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 20px 40px;
+            z-index: 10;
+            height: var(--header-height);
+            box-sizing: border-box;
+            border-bottom: 1px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+        }
+        
+        .content-header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: var(--primary-color);
+        }
+
+        .content-body {
+            padding: 30px 40px;
+        }
+
+        section {
+            padding-top: 30px;
+            margin-bottom: 50px;
+            border-top: 2px solid #ced6e0;
+        }
+
+        section:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .card {
+            background-color: #fff;
             border-radius: 8px;
-            margin-top: 1.5rem;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #dfe6e9;
         }
-        .step-badge {
-            display: inline-block;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-weight: 700;
-            border-radius: 9999px;
-            margin-bottom: 1rem;
+
+        .card p, .card ul {
+            margin-top: 0;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
         }
     </style>
 </head>
-<body class="bg-slate-50">
+<body>
 
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-15">
-                <span class="text-xl font-bold text-blue-600">2025 남부 다·더·함 문화다양성 교육운영계획</span>
-                <div class="hidden md:flex space-x-4 text-sm font-semibold text-slate-600">
-                    <a href="#topic1" class="hover:text-blue-600">기본이해</a>
-                    <a href="#topic2" class="hover:text-blue-600">갈등해소</a>
-                    <a href="#topic3" class="hover:text-blue-600">디지털활용</a>
-                    <a href="#topic4" class="hover:text-blue-600">예술교육</a>
-                    <a href="#topic5" class="hover:text-blue-600">지속가능발전</a>
-                    <a href="#topic6" class="hover:text-blue-600">인권·자치</a>
-                    <a href="#topic7" class="hover:text-blue-600">독서교육</a>
-                    <a href="#topic8" class="hover:text-blue-600">이중언어</a>
-                    <a href="#topic9" class="hover:text-blue-600">역사교육</a>
-                    <a href="#topic10" class="hover:text-blue-600">세대·젠더</a>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>연수 계획 목차</h2>
+        </div>
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <ul>
+                <li><a href="#topic-1">1. 교육과정 연계 방안</a></li>
+                <li><a href="#topic-2">2. 이주배경학생 갈등 해소</a></li>
+                <li><a href="#topic-3">3. AI·디지털 도구 활용</a></li>
+                <li><a href="#topic-4">4. 예술교육 프로그램 적용</a></li>
+                <li><a href="#topic-5">5. 지속가능발전 연계</a></li>
+                <li><a href="#topic-6">6. 인권·학생자치 활성화</a></li>
+                <li><a href="#topic-7">7. 주제 독서교육 증진</a></li>
+                <li><a href="#topic-8">8. 이중언어강사 협력</a></li>
+                <li><a href="#topic-9">9. 장소 기반 역사 교육</a></li>
+                <li><a href="#topic-10">10. 세대·젠더·계층 포용</a></li>
+            </ul>
+        </nav>
+        <div class="progress-container">
+            <p>학습 진도율: <span id="progress-text">0%</span></p>
+            <div class="progress-bar-background">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="content-header">
+            <h1>2025 남부 다·더·함 문화다양성 교사 연수 계획</h1>
+        </header>
+        <main class="content-body">
+            <section id="topic-1">
+                <h2>🔗 1. 문화다양성 교육의 기본 이해 및 학교 교육과정 연계 방안</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <ul>
+                        <li><strong>'문화다양성'</strong>의 법적 정의와 '남부 다·더·함 문화다양성교육'의 의미 및 목표 설명</li>
+                        <li>이주배경학생 증가 등 시대적 요구와 남부 지역의 다문화학생 밀집 현황을 통해 문화다양성 교육의 필요성 강조</li>
+                        <li>문화다양성 교육의 <strong>인지 영역</strong> 목표에 초점을 맞춰 지식과 정보 전달</li>
+                    </ul>
+                    <p class="card-title">방법</p>
+                    <p>PPT 강의, 관련 통계 자료 및 서울특별시의회 법제화 제안 사례 공유</p>
                 </div>
-            </div>
-        </div>
-    </nav>
-    
-    <main class="max-w-6xl mx-auto p-4">
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <ul>
+                        <li>학교 교육계획과 연계한 문화다양성교육 실천 지원 및 <strong>‘문화다양성교육 주간’</strong> 운영 추진 사례 소개</li>
+                        <li>관내 초등학교의 보편적 문화다양성교육 실천 사례 공유</li>
+                        <li>참가 교원들이 각 학교의 교육과정에 문화다양성 요소를 통합할 수 있는 구체적인 아이디어(예: 교과 수업 내 문화다양성 주제 도입, 창의적 체험활동 계획)를 조별로 도출하고 발표</li>
+                    </ul>
+                    <p class="card-title">방법</p>
+                    <p>우수 학교 사례 발표, 조별 분임 토의 및 실천 계획서 초안 작성, 갤러리 워크</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>도출된 교육과정 연계 방안에 대한 실현 가능성과 예상되는 어려움을 논의하고, 이를 해결하기 위한 지원단의 역할 및 교육지원청의 지원 방안에 대해 자유롭게 의견 교환</p>
+                    <p class="card-title">방법</p>
+                    <p>전체 토론 및 질의응답</p>
+                </div>
+            </section>
 
-    <div id="topic1" class="slide-container">
-        <div class="slide bg-blue-50">
-            <h1 class="slide-title">문화다양성 교육의 기본 이해<br>& 학교 교육과정 연계 방안</h1>
-            <p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (1/10)</p>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-blue-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-blue-600">🤔 문화다양성, 왜 지금 중요할까요?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-lg">
-                <div class="content-box border-blue-600"><h3 class="font-bold text-xl mb-2">📈 시대적 요구와 현황</h3><ul class="list-disc list-inside space-y-2 text-slate-700"><li>이주배경학생의 지속적인 증가</li><li>남부 지역의 높은 다문화학생 밀집도</li><li>'문화다양성의 보호와 증진에 관한 법률' 등 법적 기반</li></ul></div>
-                <div class="content-box border-blue-600"><h3 class="font-bold text-xl mb-2">🎯 교육의 목표 (인지 영역)</h3><ul class="list-disc list-inside space-y-2 text-slate-700"><li>정확한 지식과 정보 전달</li><li>다양한 문화를 객관적으로 이해하는 능력 함양</li><li>편견과 고정관념 해소를 위한 기초 다지기</li></ul></div>
-            </div>
-             <p class="mt-8 text-slate-600">💡 <strong>사례 공유:</strong> 서울특별시의회의 문화다양성 교육 관련 법제화 제안 내용을 통해 교육 정책의 흐름을 이해합니다.</p>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-blue-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-blue-600">🏫 우리 학교에 적용하기</h2>
-            <div class="bg-blue-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-blue-800 mb-2">✍️ 조별 실습 & 갤러리 워크</h3><p class="text-blue-700"><strong>[사례]</strong> A초등학교 '문화다양성 교육 주간' 운영 사례 공유<br><strong>[활동]</strong> 우리 학교 특성을 고려하여, 교과/창체와 연계한 문화다양성 교육 실천 계획서 초안을 작성하고 공유합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-blue-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-blue-600">💬 함께 고민하고 해결하기</h2>
-            <div class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center"><p>"계획의 <span class="text-blue-600">실현 가능성</span>과 예상되는 <span class="text-red-500">어려움</span>은 무엇일까요? <br>이를 해결하기 위해 <span class="text-green-600">지원단</span>과 <span class="text-green-600">교육지원청</span>의 역할은 무엇일까요?"</p></div>
-        </div>
-    </div>
-    
-    <div id="topic2" class="slide-container">
-        <div class="slide bg-rose-50"><h1 class="slide-title">이주배경학생의 교실 내 갈등 해소<br>를 위한 문화다양성 교육 실천</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (2/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-rose-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-rose-600">문제 제기: 교실 속 보이지 않는 벽 🧱</h2>
-            <div class="content-box border-rose-600"><h3 class="font-bold text-xl mb-2">❤️ 교육의 목표 (정의적 영역)</h3><p class="text-slate-700">언어·문화 차이로 인한 혐오, 차별, 학교 폭력 등 갈등 심화 현황을 인지하고(사례 영상 시청), 지식 전달을 넘어 학생들의 <span class="font-bold">관점, 태도, 감정의 긍정적 변화</span>를 유도하는 교육의 중요성을 이해합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-rose-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-rose-600">🤝 존중과 협력의 교실 만들기</h2>
-            <div class="bg-rose-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-rose-800 mb-2">🎭 실습: 갈등 해결 수업 모델 개발</h3><p class="text-rose-700"><strong>[사례]</strong> '차별 없는 인권존중 통합교육' 및 '상호존중 학생자치' 사례 공유<br><strong>[활동]</strong> 갈등 상황을 설정하고, 학생들이 협력하는 방법을 배울 수 있는 수업(역할극, 인권 동화 활용, 학생자치 캠프)을 설계하고 시연합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-rose-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-rose-600">💬 현장의 지혜 나누기</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"실제 교실에서 겪었던 <span class="text-rose-600">어려움</span>은 무엇인가요? <br>효과적인 <span class="text-green-600">학생 지도 방안</span>과 <span class="text-green-600">교원 협력 체계</span>는 어떻게 구축할 수 있을까요?"</p>
-        </div>
-    </div>
-    
-    <div id="topic3" class="slide-container">
-        <div class="slide bg-emerald-50"><h1 class="slide-title">AI·디지털 도구를 활용한<br>문화다양성 교육 콘텐츠 개발</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (3/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-emerald-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-emerald-600">🚀 기술과 교육의 만남</h2>
-            <div class="content-box border-emerald-600"><h3 class="font-bold text-xl mb-2">🤖 AI·디지털 기술의 잠재력</h3><p class="text-slate-700">미디어, 문화콘텐츠 속 문화다양성을 살펴보고, AI·디지털 기술이 개인 맞춤형 교육과 풍부한 콘텐츠 제공에 기여할 수 있는 잠재력을 탐색합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-emerald-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-emerald-600">💻 Let's Create! 콘텐츠 제작 실습</h2>
-            <div class="bg-emerald-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-emerald-800 mb-2">🛠️ 실습: Canva, Gemini 등 AI 도구 활용하기</h3><p class="text-emerald-700"><strong>[사례]</strong> 서울시교육청 AI 교육 서비스 및 수다날 활용 사례<br><strong>[활동]</strong> 조별로 다국어 캠페인 포스터, 문화 소개 영상 시나리오 등 교육 자료를 직접 제작하고 시연합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-emerald-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-emerald-600">💬 디지털 교육, 현장의 목소리</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"AI·디지털 도구 활용 시 <span class="text-emerald-600">교육 효과</span> 증진 방안과 <br><span class="text-rose-500">기술 격차</span> 해소 방안은 무엇일까요? (2022 개정 교육과정 연계)"</p>
-        </div>
-    </div>
-    
-    <div id="topic4" class="slide-container">
-        <div class="slide bg-violet-50"><h1 class="slide-title">문화다양성 감수성 신장을 위한<br>예술교육 프로그램 적용</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (4/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-violet-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-violet-600">🎨 예술로 만나는 다양성</h2>
-            <div class="content-box border-violet-600"><h3 class="font-bold text-xl mb-2">🎭 예술의 역할과 표현</h3><p class="text-slate-700">'문화창조와 표현' 영역을 중심으로 예술의 역할을 이해하고, 세대, 지역, 젠더 등 다양성이 예술 작품(사진, 영상 감상)을 통해 어떻게 표현되는지 탐구합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-violet-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-violet-600">🎼 우리 반 예술 프로젝트 기획하기</h2>
-            <div class="bg-violet-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-violet-800 mb-2">🎨 실습: 학급 예술 활동 계획하기</h3><p class="text-violet-700"><strong>[사례]</strong> '다양성 칸타타!', '저경력교사 예술체험 멘토링' 사례 공유<br><strong>[활동]</strong> 조별로 다문화 동요 작사, 악기 연주 영상 제작, 문화 혼합 디자인 스케치 등 학급 예술 활동 계획서를 작성하고 아이디어를 나눕니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-violet-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-violet-600">💬 예술 교육, 어떻게 지속할까?</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"예술 교육의 <span class="text-violet-600">효과</span>와 <span class="text-rose-500">한계</span>는 무엇일까요? <br> 지속적인 적용을 위해 <span class="text-green-600">교사 역량 강화</span>와 <span class="text-green-600">지원 방안</span>은 무엇이 필요할까요?"</p>
-        </div>
-    </div>
-    
-    <div id="topic5" class="slide-container">
-        <div class="slide bg-lime-50"><h1 class="slide-title">지속가능발전 및 생물다양성 교육과<br>문화다양성의 연계</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (5/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-lime-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-lime-600">🌍 문화와 환경의 연결고리</h2>
-            <div class="content-box border-lime-600"><h3 class="font-bold text-xl mb-2">🌱 문화다양성과 지속가능발전</h3><p class="text-slate-700">'취향과 라이프스타일'의 관점에서 문화다양성과 지속가능발전의 관계를 이해하고, 지구 환경 문제를 다양한 문화적 관점에서 바라보는 중요성을 강조합니다. (관련 뉴스/다큐 클립 시청)</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-lime-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-lime-600">♻️ 기후 행동, 다함께 실천하기</h2>
-            <div class="bg-lime-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-lime-800 mb-2">👐 실습: 다국어 환경 캠페인 기획</h3><p class="text-lime-700"><strong>[사례]</strong> '기후행동 학생365 다국어 캠페인', '생물다양성 교육' 사례 공유<br><strong>[활동]</strong> 학생들이 환경 보호를 위한 기후 행동을 다양한 언어와 문화적 방식으로 실천하는 캠페인을 기획하고, 관련 도서 토론 활동을 실습합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-lime-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-lime-600">💬 실천적 다양성 교육을 위하여</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"문화다양성 관점에서 환경 교육을 강화할 때의 <span class="text-lime-600">장점</span>과 <span class="text-rose-500">어려움</span>은 무엇일까요? <br>실천적 교육을 위해 <span class="text-green-600">교원의 역할</span>과 <span class="text-green-600">필요한 지원</span>에 대해 토론해봅시다."</p>
-        </div>
-    </div>
-    
-    <div id="topic6" class="slide-container">
-        <div class="slide bg-cyan-50"><h1 class="slide-title">상호 존중 및 다양성 기반<br>인권·학생자치 교육 활성화</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (6/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-cyan-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-cyan-600">⚖️ 인권과 자치, 문화다양성의 실천</h2>
-            <div class="content-box border-cyan-600"><h3 class="font-bold text-xl mb-2">🤝 교육의 실천 영역</h3><p class="text-slate-700">문화다양성 교육의 중요한 실천 영역으로서 '차별 없는 인권존중 통합교육'과 '상호존중 학생자치'가 어떻게 기여하는지 국내외 사례를 통해 알아봅니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-cyan-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-cyan-600">🙋‍♀️ 존중의 문화를 만드는 리더십</h2>
-            <div class="bg-cyan-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-cyan-800 mb-2">💡 실습: 맞춤형 인권·자치 프로그램 기획</h3><p class="text-cyan-700"><strong>[사례]</strong> '학교로 찾아가는 인권존중교육', '학생자치 리더십 캠프' 사례 공유<br><strong>[활동]</strong> 학년군별 맞춤형 인권 교육 프로그램(동화, 특강 연계) 및 학생자치 활동에서 문화다양성을 실천할 리더십 프로그램(역사 속 인물 탐색 등)을 기획합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-cyan-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-cyan-600">💬 자율적 실천을 위한 지원</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"학생들의 <span class="text-cyan-600">인권 감수성</span>과 <span class="text-cyan-600">자율적 실천</span>을 돕기 위한 교사의 효과적인 역할은 무엇일까요? <br>학교 공동체 전체의 <span class="text-green-600">문화다양성 교육 활성화</span>를 위해 무엇을 지원해야 할까요?"</p>
-        </div>
-    </div>
-    
-    <div id="topic7" class="slide-container">
-        <div class="slide bg-orange-50"><h1 class="slide-title">문화다양성 주제 독서교육을 통한<br>학생 기초 소양 증진</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (7/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-orange-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-orange-600">📖 책으로 여는 다양성의 세계</h2>
-            <div class="content-box border-orange-600"><h3 class="font-bold text-xl mb-2">📚 언어, 교육, 그리고 독서</h3><p class="text-slate-700">문화다양성의 '언어'와 '교육' 영역에서 독서 교육이 다양한 문화 이해와 공감 능력 신장에 미치는 긍정적 영향을 강조합니다. (관련 도서 소개)</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-orange-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-orange-600">🗣️ 질문과 토론이 있는 교실</h2>
-            <div class="bg-orange-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-orange-800 mb-2">✨ 실습: 서울형 토론 2.0 수업 모형 적용</h3><p class="text-orange-700"><strong>[사례]</strong> '문화다양성 주제 학생 독서캠프/워크숍' 사례 공유<br><strong>[활동]</strong> 문화다양성 주제 그림책을 활용한 '질문이 있는 서울형 토론 2.0' 수업을 시연하고, 독서 토론 캠프 프로그램을 기획합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-orange-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-orange-600">💬 독서 교육, 정보와 노하우 공유</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"독서 교육으로 학생들의 <span class="text-orange-600">문화다양성 감수성</span>을 강화하는 실질적인 방안은 무엇일까요? <br><span class="text-green-600">독서 교육 지원단과의 협력</span>을 어떻게 활성화할 수 있을까요?"</p>
-        </div>
-    </div>
-    
-    <div id="topic8" class="slide-container">
-        <div class="slide bg-indigo-50"><h1 class="slide-title">이중언어강사와의 협력을 통한<br>다문화학생 맞춤형 지원 강화</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (8/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-indigo-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-indigo-600">💬 두 개의 언어, 두 배의 가능성</h2>
-            <div class="content-box border-indigo-600"><h3 class="font-bold text-xl mb-2">🌐 이중언어 사용의 중요성</h3><p class="text-slate-700">'언어' 영역에서 이중언어 사용의 이점과 이주배경학생의 언어적 특성 이해의 중요성을 설명하고, 맞춤형 성장 지원의 필요성을 강조합니다. (관련 연구 결과/사례 소개)</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-indigo-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-indigo-600">🤝 함께 성장하는 교육 공동체</h2>
-            <div class="bg-indigo-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-indigo-800 mb-2">💼 실습: 협력 프로그램 공동 기획</h3><p class="text-indigo-700"><strong>[사례]</strong> '이중언어강사 네트워크 활성화', '이중언어교실 특색사업' 사례 공유<br><strong>[활동]</strong> 이중언어강사와 협력하여 다문화학생 학교 적응 및 진로 교육(멘토링), 이중언어 말하기 대회 등 특색 사업을 공동으로 기획합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-indigo-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-indigo-600">💬 시너지와 어려움, 그리고 해결책</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"이중언어강사와의 협력 시 <span class="text-indigo-600">시너지 효과</span>와 <span class="text-rose-500">어려움</span>은 무엇일까요? <br>실질적인 <span class="text-green-600">맞춤형 지원 체계</span> 마련을 위한 협력 방안에 대해 토론해봅시다."</p>
-        </div>
-    </div>
-    
-    <div id="topic9" class="slide-container">
-        <div class="slide bg-amber-50"><h1 class="slide-title">장소 기반 역사 교육을 통한<br>문화다양성 이해 증진</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (9/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-amber-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-amber-600">🏛️ 우리 동네 역사에서 다양성 찾기</h2>
-            <div class="content-box border-amber-600"><h3 class="font-bold text-xl mb-2">📍 '지역'과 '역사'의 만남</h3><p class="text-slate-700">'지역'이라는 문화다양성 요인에 주목하여, '장소기반 역사교육'이 학생들이 지역사회 역사를 통해 서로를 이해하고 존중하는 계기가 됨을 강조합니다. (지역 유적지 자료 활용)</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-amber-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-amber-600">🗺️ 우리 함께, 역사 탐험대!</h2>
-            <div class="bg-amber-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-amber-800 mb-2">🧭 실습: 지역 역사 교육 프로그램 기획</h3><p class="text-amber-700"><strong>[사례]</strong> '이주배경학생 장소기반 역사교육', '역사자원 보호자 탐험대' 사례 공유<br><strong>[활동]</strong> 구로, 금천, 영등포 등 지역사회 역사자료를 활용하여, 모든 학생이 함께 참여할 수 있는 탐방 코스 및 안내 자료 등 교육 프로그램을 기획하고 발표합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-amber-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-amber-600">💬 지역사회와 함께하는 교육</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"역사 교육에 <span class="text-amber-600">문화다양성 관점</span>을 통합할 때의 효과와 <span class="text-rose-500">도전 과제</span>는 무엇일까요? <br><span class="text-green-600">지역사회 연계 협력기관</span>을 어떻게 발굴하고 연계 사업을 추진할 수 있을까요?"</p>
-        </div>
-    </div>
-    
-    <div id="topic10" class="slide-container">
-        <div class="slide bg-pink-50"><h1 class="slide-title">교실 내 세대·젠더·계층 다양성<br>이해 및 포용 교육</h1><p class="slide-subtitle mt-4">2025 남부 다·더·함 문화다양성 교사 연수 (10/10)</p></div>
-        <div class="slide">
-            <div class="step-badge bg-pink-600">1단계: 개념 강의 (30분)</div>
-            <h2 class="section-title border-pink-600">우리 곁의 다양성 들여다보기</h2>
-            <div class="content-box border-pink-600"><h3 class="font-bold text-xl mb-2">❤️ 포용의 중요성</h3><p class="text-slate-700">교실 내 존재하는 세대, 젠더, 계층, 소수자, 종교 등 다양한 결의 차이를 인지하고 존중하는 것의 중요성을 설명합니다. 모든 학생이 존중받는 교실이 모든 교육의 출발점임을 강조합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-pink-600">2단계: 사례 나눔 및 실습 (60분)</div>
-            <h2 class="section-title border-pink-600">모두를 위한 교실 설계하기</h2>
-            <div class="bg-pink-50 p-6 rounded-lg"><h3 class="font-bold text-xl text-pink-800 mb-2">✍️ 실습: 시나리오 기반 토의 및 자료 개발</h3><p class="text-pink-700"><strong>[사례]</strong> '다양성 기반 양성평등교육', 'Gender-free 인식 개선' 사례 공유<br><strong>[활동]</strong> 특정 세대/젠더/계층 편견이 드러나는 갈등 시나리오를 바탕으로, 이를 해결하기 위한 교육 활동과 자료(활동지)를 직접 개발합니다.</p></div>
-        </div>
-        <div class="slide">
-            <div class="step-badge bg-pink-600">3단계: 의견 나누기 및 토론 (30분)</div>
-            <h2 class="section-title border-pink-600">함께 만드는 미래 교육</h2>
-            <p class="p-8 bg-slate-100 rounded-xl text-2xl font-semibold text-slate-700 text-center">"모든 학생을 포용하기 위한 <span class="text-pink-600">교사의 역할</span>과 <span class="text-pink-600">학교 공동체의 인식 전환</span>을 위해 무엇을 할 수 있을까요? <br>편견과 차별 없는 미래를 위한 구체적인 실천 방안을 제안해봅시다."</p>
-        </div>
-    </div>
-    
-    </main>
+            <section id="topic-2">
+                <h2>🤝 2. 이주배경학생의 교실 내 갈등 해소를 위한 문화다양성 교육 실천</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>이주배경학생 증가에 따른 교실 내 언어 및 문화적 차이로 인한 혐오와 차별, 학교폭력 갈등 심화 현황을 제시하고, 문화다양성 교육이 <strong>사회정서(정의) 영역</strong>에서 학생들의 관점과 태도, 감정 변화를 유도하는 중요성을 설명</p>
+                    <p class="card-title">방법</p>
+                    <p>문제 제기형 강의, 관련 갈등 사례 영상 시청</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'차별 없는 인권존중 통합교육'</strong> 및 <strong>'상호존중 학생자치 내실화'</strong> 사례를 중심으로 교실 내 갈등 해결을 위한 구체적인 교육 활동 계획을 실습하고, 학생들이 서로 다른 문화를 존중하고 협력하는 방법을 배울 수 있는 수업 모델 개발</p>
+                    <p class="card-title">방법</p>
+                    <p>역할극 시연, 수업 아이디어 공유 및 실습 (예: 인권 존중 동화 활용 교육, 학생자치 리더십 캠프 프로그램 아이디어)</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>교실 내 실제 갈등 상황에서 문화다양성 교육을 적용하며 겪을 수 있는 어려움을 공유하고, 효과적인 학생 지도 방안 및 교원 간 협력 체계 구축에 대해 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>소그룹별 경험 공유 및 해결 방안 모색 토의</p>
+                </div>
+            </section>
+            
+            <section id="topic-3">
+                <h2>🤖 3. AI·디지털 도구를 활용한 문화다양성 교육 콘텐츠 개발 및 적용</h2>
+                 <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                     <p class="card-title">내용</p>
+                     <p>미디어와 문화콘텐츠, 교육 영역에서 문화다양성 발현 방식을 소개하고, AI·디지털 기술이 문화다양성 교육에 기여할 수 있는 잠재력을 설명</p>
+                     <p class="card-title">방법</p>
+                     <p>강의와 함께 <strong>'다양한 문화권 맞춤형 AI·디지털 교육'</strong>의 중요성 강조</p>
+                </div>
+                 <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                     <p class="card-title">내용</p>
+                     <p>서울시 교육청 제공 인공지능 교육 서비스와 <strong>캔바, 제미나이 등 AI·디지털 도구</strong>를 활용하여 문화다양성 교육 자료(예: 다국어 캠페인 포스터, 다양한 문화권 소개 영상)를 직접 제작하는 실습을 진행하고, <strong>수다날 연계 통·번역 프로그램 활용 방안</strong> 등 구체적인 적용 사례 탐색</p>
+                     <p class="card-title">방법</p>
+                     <p>실습 위주 (캔바, 제미나이 등 활용), 조별 콘텐츠 제작 및 시연</p>
+                </div>
+                 <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                     <p class="card-title">내용</p>
+                     <p>AI·디지털 도구 활용 시 교육 효과 증진 방안과 기술 격차로 인한 어려움 및 해결 방안, 그리고 <strong>2022 개정 교육과정 현장 안착 지원</strong>에 대해 논의</p>
+                     <p class="card-title">방법</p>
+                     <p>자유로운 의견 교환 및 Q&A</p>
+                </div>
+            </section>
 
-    <footer class="text-center py-10 text-slate-500">
-        <p>2025 남부 다·더·함 문화다양성 교사 연수 &copy; 2025</p>
-        <p>본 자료는 '2025 남부 다·더·함 문화다양성 교사 연수'를 위해 제작되었습니다.</p>
-    </footer>
+            <section id="topic-4">
+                <h2>🎨 4. 문화다양성 감수성 신장을 위한 예술교육 프로그램 적용</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성 교육의 <strong>문화창조와 표현 영역</strong>을 중심으로 예술의 역할과 중요성을 설명하고, 문화다양성을 발생시키는 요인 중 '세대', '지역', '젠더' 등이 예술을 통해 어떻게 표현될 수 있는지 설명</p>
+                    <p class="card-title">방법</p>
+                    <p>예술 작품 예시(사진, 짧은 영상)와 함께 강의</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'다양성 칸타타! 예술교육프로그램 운영'</strong> 및 <strong>'저경력교사 다양성 예술체험 원데이 멘토링'</strong> 사례를 참고하여, 문화다양성을 주제로 한 학급 단위 예술 활동(예: 가창, 악기 연주 동영상 제작, 예술 전시회 기획)을 계획하고 일부 실습</p>
+                    <p class="card-title">방법</p>
+                    <p>예술 활동 계획서 작성, 간단한 창작 활동 (예: 다문화 동요 작사/작곡 아이디어, 문화 혼합 디자인 스케치)</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>예술 교육을 통한 문화다양성 감수성 함양의 효과와 이를 학교 현장에 지속적으로 적용하기 위한 방안, 그리고 교사 역량 강화 필요성에 대해 심도 있는 토론 진행</p>
+                    <p class="card-title">방법</p>
+                    <p>그룹별 아이디어 발표 및 피드백, 예술 교육 전문성 향상 방안 논의</p>
+                </div>
+            </section>
 
+            <section id="topic-5">
+                <h2>🌍 5. 지속가능발전 및 생물다양성 교육과 문화다양성의 연계</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성이 발현되는 영역 중 <strong>'취향과 라이프스타일' 및 '교육'과 '지속가능발전'</strong>의 연결 고리를 설명하고, 지구 환경 문제를 다양한 문화적 관점에서 바라보는 중요성 강조</p>
+                    <p class="card-title">방법</p>
+                    <p>관련 뉴스 기사 또는 다큐멘터리 클립 시청 후 개념 설명</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'기후행동 학생365 다국어 캠페인'</strong> 및 <strong>'지속가능발전을 위한 생물다양성교육'</strong> 사례를 바탕으로 학생들이 환경 보호를 위한 기후 행동을 다양한 언어와 문화적 방식으로 실천하고 공유하는 활동을 계획하고, 관련 도서를 읽고 상호 교류하는 방법 실습</p>
+                    <p class="card-title">방법</p>
+                    <p>조별 캠페인 아이디어 구체화 (예: 재활용 재료로 피켓 만들기), 환경 도서 읽고 토론</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성 관점에서 환경 교육을 강화할 때의 장단점을 논의하고, 실천적 다양성 교육을 위한 교원들의 역할과 필요한 지원에 대해 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>경험 공유 및 교육 프로그램 개발 아이디어 제안</p>
+                </div>
+            </section>
+            
+            <section id="topic-6">
+                <h2>⚖️ 6. 상호 존중 및 다양성 기반 인권·학생자치 교육 활성화</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성이 발현되는 영역으로서 <strong>'교육'</strong>의 중요성을 강조하며, '차별 없는 인권존중 통합교육'과 '상호존중 학생자치'가 문화다양성 교육의 실천 영역에 어떻게 기여하는지 설명</p>
+                    <p class="card-title">방법</p>
+                    <p>인권 및 다양성 관련 국내외 사례 소개 강의</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'학교로 찾아가는 차이 존중! 차별금지 인권존중교육'</strong>과 <strong>'상호존중 학생자치 리더십 캠프'</strong>의 구체적인 운영 사례를 공유하고, 학년군별 맞춤형 인권 교육 프로그램 (동화, 특강, 공연 연계) 및 학생자치 활동에서 문화다양성 존중을 실천할 수 있는 리더십 프로그램 (역사 속 인물 탐색)을 기획하고 발표</p>
+                    <p class="card-title">방법</p>
+                    <p>조별 프로그램 기획 및 발표, 인권 존중 교육 활동지 개발 실습</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>학생들의 인권 감수성 향상과 자율적인 문화다양성 실천을 위한 효과적인 교사의 역할에 대해 논의하고, 학교 공동체의 문화다양성 교육 활성화 지원 방안 모색</p>
+                    <p class="card-title">방법</p>
+                    <p>그룹 토의 및 전체 발표, 학교 내 적용 시 어려움 논의</p>
+                </div>
+            </section>
+            
+            <section id="topic-7">
+                <h2>📖 7. 문화다양성 주제 독서교육을 통한 학생 기초 소양 증진</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성이 발현되는 영역 중 <strong>'언어'와 '교육'</strong>의 중요성을 설명하고, 독서 교육이 다양한 문화 이해와 공감 능력 신장에 미치는 긍정적인 영향을 강조</p>
+                    <p class="card-title">방법</p>
+                    <p>독서의 중요성 및 문화다양성 관련 도서 소개</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'문화다양성 주제 학생 독서캠프'</strong>와 <strong>'문화다양성 주제 독서교육 워크숍'</strong> 사례를 중심으로, 문화다양성 주제의 그림책과 연계한 <strong>질문이 있는 서울형 토론 2.0</strong> 수업 모형을 실습하고 독서 토론 캠프 프로그램 기획</p>
+                    <p class="card-title">방법</p>
+                    <p>독서 토론 수업 시연, 문화다양성 도서 목록 공유 및 토론 활동 계획</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>독서 교육을 통해 학생들의 문화다양성 감수성을 강화하는 실질적인 방안을 논의하고, 독서 교육 지원단과의 협력을 통한 정보·자료 공유 활성화에 대해 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>독서 교육 경험 공유, 토론 활성화를 위한 노하우 나눔</p>
+                </div>
+            </section>
+
+            <section id="topic-8">
+                <h2>💬 8. 이중언어강사와의 협력을 통한 다문화학생 맞춤형 지원 강화</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성 교육의 <strong>'언어' 영역</strong>에서 이중언어 사용의 중요성과 이주배경학생들의 언어적 특성을 이해하는 것이 왜 중요한지 설명하고, 다문화가정 학생 맞춤형 성장을 위한 지원의 필요성 강조</p>
+                    <p class="card-title">방법</p>
+                    <p>이중언어 사용의 이점 관련 연구 결과 또는 사례 소개</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'이중언어강사 역량 강화를 위한 네트워크 활성화'</strong> 및 <strong>'이중언어교실 다국어 특색사업 운영'</strong> 사례를 공유하고, 이중언어강사와 협력하여 다문화 학생의 학교 적응 및 진로 교육 (예: 이주배경학생 진로 멘토링)을 위한 교육 프로그램을 계획하고, <strong>이중언어 말하기 대회</strong> 등 특색 사업 구체화</p>
+                    <p class="card-title">방법</p>
+                    <p>이중언어강사 협력 우수사례 발표, 협력 프로그램 공동 기획</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>이중언어강사와의 협력 시 시너지 효과와 함께 발생할 수 있는 어려움을 공유하고, 다문화 학생 맞춤형 지원 체계 마련을 위한 실질적인 협력 방안에 대해 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>이중언어 교육 현장의 애로사항 공유 및 해결 방안 모색</p>
+                </div>
+            </section>
+
+            <section id="topic-9">
+                <h2>🗺️ 9. 장소 기반 역사 교육을 통한 문화다양성 이해 증진</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성을 발생시키는 요인 중 <strong>'지역'</strong>의 의미를 설명하고, '장소기반 역사교육'이 다양한 문화적 배경을 가진 학생들이 지역사회의 역사를 통해 서로를 이해하고 존중하는 계기가 될 수 있음 강조</p>
+                    <p class="card-title">방법</p>
+                    <p>지역 역사 유적지 사진 또는 영상 자료를 활용한 강의</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'이주배경학생 장소기반 역사교육 운영'</strong> 및 <strong>'역사교육 자원 보호자 탐험대 성과 발표회'</strong> 사례를 공유하고, <strong>구로구, 금천구, 영등포구 지역사회</strong> 소재 역사자료 탐방 및 안내 자료 개발과 연계하여, 다문화 학생과 한국 학생이 함께 참여할 수 있는 장소 기반 역사 교육 프로그램을 기획하고 발표</p>
+                    <p class="card-title">방법</p>
+                    <p>조별 지역 역사 교육 프로그램 기획 (예: 탐방 코스, 활동 내용 포함), 발표 및 피드백</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>역사 교육에서 문화다양성 관점을 통합하는 것의 효과와 도전 과제를 논의하고, 지역사회 연계 협력기관 발굴 및 연계 사업 추진을 통한 교육 활성화 방안에 대해 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>지역사회 자원 활용 방안 논의, 협력적 문제 해결</p>
+                </div>
+            </section>
+            
+            <section id="topic-10">
+                <h2>✨ 10. 교실 내 세대·젠더·계층 다양성 이해 및 포용 교육</h2>
+                <div class="card">
+                    <h3>1단계: 문화다양성 개념 강의 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>문화다양성을 발생시키는 주요 요인인 <strong>'세대', '젠더', '계층', '소수자', '종교'</strong>에 대해 심도 있게 다루고, 특히 교실이라는 공간에서 나타나는 이러한 다양성을 인지하고 존중하는 것의 중요성 설명</p>
+                    <p class="card-title">방법</p>
+                    <p>각 요인별 정의와 함께 실제 학교 현장에서 나타날 수 있는 사례를 제시하며 강의</p>
+                </div>
+                <div class="card">
+                    <h3>2단계: 학교 교육과정 적용 사례 나눔 및 실습 (60분)</h3>
+                    <p class="card-title">내용</p>
+                    <p><strong>'다양성 기반 양성평등교육'</strong> 사례를 바탕으로 <strong>젠더 프리(Gender-free) 인식 개선 교육</strong>을 포함한 다양한 형태의 다양성 교육 프로그램을 기획하고 실습하며, 동화 속 다양성의 모습을 살펴보고 문화다양성과 젠더 감수성을 함양하는 활동 포함</p>
+                    <p class="card-title">방법</p>
+                    <p>조별 시나리오 기반 토의 (예: 특정 세대/젠더/계층에 대한 편견 해소 방안), 교육 자료(활동지) 개발</p>
+                </div>
+                <div class="card">
+                    <h3>3단계: 교원 간 의견 나누기 및 토론 (30분)</h3>
+                    <p class="card-title">내용</p>
+                    <p>교실 내 다양한 배경을 가진 학생들을 포용하기 위한 교사의 역할과 학교 공동체 인식 전환의 중요성을 논의하고, 편견과 차별 없이 미래를 함께 만드는 문화다양성 교육 지원을 위한 구체적인 실천 방안 토론</p>
+                    <p class="card-title">방법</p>
+                    <p>자유 토론 및 그룹별 제안 사항 발표</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const mainContent = document.querySelector('.main-content');
+        const contentHeader = document.querySelector('.content-header');
+        
+        // 안전한 요소 접근 보장
+        if (!sections.length || !navLinks.length || !progressBar || !progressText || !mainContent || !contentHeader) {
+            console.error("필수적인 학습 요소를 찾을 수 없습니다.");
+            return;
+        }
+
+        const headerHeight = contentHeader.offsetHeight;
+
+        function updateProgressAndNav() {
+            let currentSectionId = '';
+            
+            // 현재 활성화된 섹션 찾기
+            // 화면 상단에서 헤더 높이만큼 아래 지점을 기준으로 현재 섹션을 판단
+            const scrollPosition = mainContent.scrollTop + headerHeight + 20;
+
+            sections.forEach(section => {
+                if (scrollPosition >= section.offsetTop) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            // 네비게이션 링크 활성화
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSectionId}`) {
+                    link.classList.add('active');
+                }
+            });
+
+            // 진행률 계산 및 업데이트
+            const scrollableHeight = mainContent.scrollHeight - mainContent.clientHeight;
+            // 스크롤이 불가능한 경우(콘텐츠가 짧을 때) 0으로 나누는 것을 방지
+            const progressPercentage = scrollableHeight > 0 ? (mainContent.scrollTop / scrollableHeight) * 100 : 0;
+            const displayPercentage = Math.min(100, Math.max(0, progressPercentage));
+            
+            if (progressBar) {
+                progressBar.style.width = displayPercentage + '%';
+            }
+            if (progressText) {
+                progressText.textContent = Math.round(displayPercentage) + '%';
+            }
+        }
+        
+        // 사이드바 링크 클릭 시 부드러운 스크롤
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // 요소의 offsetTop은 스크롤 컨테이너(.main-content) 내에서의 위치
+                    mainContent.scrollTo({
+                        top: targetElement.offsetTop - headerHeight, // 헤더 높이만큼 오프셋
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 스크롤 이벤트에 함수 연결
+        mainContent.addEventListener('scroll', updateProgressAndNav);
+
+        // UI 초기화
+        function initializeUI() {
+            updateProgressAndNav();
+        }
+        
+        initializeUI();
+    });
+    </script>
 </body>
 </html>
